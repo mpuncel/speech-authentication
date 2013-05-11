@@ -1,0 +1,1 @@
+take time average of each mfcc, might be enough to identify speaker
