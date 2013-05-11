@@ -2,8 +2,6 @@ import os
 import operator
 root = r'/Users/michaelpuncel/Desktop/Spring2013/6.345/speech-authentication/by_speaker/'
 
-words = {}
-sentences = {}
 matlab_script = file(r'/Users/michaelpuncel/Desktop/Spring2013/6.345/speech-authentication/matlab_scripts/mfcc_saver.m', 'w')
 
 for root, dirs, files in os.walk(root):
