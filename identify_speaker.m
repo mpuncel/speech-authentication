@@ -14,38 +14,30 @@ function [ probability_array, speaker_names ] = identify_speaker( path_to_data, 
     
     max_prob = -Inf;
     max_prob_speaker = '';
-    max_prob_2 = -Inf;
-    max_prob_speaker_2 = '';
-    max_prob_3 = -Inf;
-    max_prob_speaker_3 = '';
     
     for i=1:num_models
         [path, filename, ext] = fileparts(directories{i});
         parts = regexp(path, '/', 'split');
         speaker_name = parts{3};
         probability = speaker_model_probability(path_to_data, directories{i});
-        
+      
         if probability > max_prob
-            max_prob_3 = max_prob_2;
-            max_prob_speaker_3 = max_prob_speaker_2;
-            max_prob_2 = max_prob;
-            max_prob_speaker_2 = max_prob_speaker;
             max_prob = probability;
             max_prob_speaker = speaker_name;
-        elseif probability > max_prob_2
-            max_prob_3 = max_prob_2;
-            max_prob_speaker_3 = max_prob_speaker_2;
-            max_prob_2 = probability;
-            max_prob_speaker_2 = speaker_name;
-        elseif probability > max_prob_3
-            max_prob_3 = probability;
-            max_prob_speaker_3 = speaker_name;   
-        end
         probability_array(i) = probability;
         speaker_names{i} = speaker_name;
+        end
     end
+    
+    true_probability = speaker_model_probability(path_to_data, strcat('mfcc_data/train_data/', this_speaker, '/gmm8.mat'));
+    
+    sorted_probability = sort(probability_array, 'ascend');
+    sorted_probability
+    rank = find(sorted_probability==true_probability);
+    rank = rank(1);
+    rank
     outputfile = fopen('classifications.txt', 'a');
 
-    fprintf(outputfile, '%s\t%s\t%s\t%s\n', this_speaker, max_prob_speaker, max_prob_speaker_2, max_prob_speaker_3);
+    fprintf(outputfile, '%s\t%s\t%u\n', this_speaker, max_prob_speaker, rank);
     fclose(outputfile);
 end
